@@ -42,17 +42,20 @@
     private async Task LoadArticle()
     {
         IsLoading = true;
-        using (var client = new HttpClient())
+        if (isValidLink)
         {
-            var response = await client.GetAsync(CurrentValue);
-            if (response.IsSuccessStatusCode)
+            using (var client = new HttpClient())
             {
-                Article article = await Task.Run(() =>
+                var response = await client.GetAsync(CurrentValue);
+                if (response.IsSuccessStatusCode)
                 {
-                    Reader reader = new Reader(CurrentValue);
-                    return reader.GetArticle();
-                });
-                _rawContent = Rabbit.ZgToUni(article.Content);
+                    Article article = await Task.Run(() =>
+                    {
+                        Reader reader = new Reader(CurrentValue);
+                        return reader.GetArticle();
+                    });
+                    _rawContent = Rabbit.ZgToUni(article.Content);
+                }
             }
         }
         IsLoading = false;
