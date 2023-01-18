@@ -1,0 +1,52 @@
+@page "/event-handler"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject DialogService DialogService
+@inject ContextMenuService ContextMenuService
+@inject TooltipService TooltipService
+@inject NotificationService NotificationService
+
+<PageTitle>EventHandler</PageTitle>
+<div class="row">
+    <div class="col-12">
+        <RadzenText Text="EventHandler" TextStyle="TextStyle.H3" TagName="TagName.H1" />
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+
+<h1>@currentHeading</h1>
+
+<p>
+    <label>
+        New title
+        <input @bind="newHeading" />
+    </label>
+    <button @onclick="UpdateHeading">
+        Update heading
+    </button>
+</p>
+
+<p>
+    <label>
+        <input type="checkbox" @oninput="CheckChanged" />
+        @checkedMessage
+    </label>
+</p>
+</div>
+</div>
+@code {
+    private string currentHeading = "Initial heading";
+    private string? newHeading;
+    private string checkedMessage = "Not changed yet";
+
+    private void UpdateHeading()
+    {
+        currentHeading = $"{newHeading}!!!";
+    }
+
+    private void CheckChanged()
+    {
+        checkedMessage = $"Last changed at {DateTime.Now}";
+    }
+}

@@ -1,0 +1,38 @@
+
+<RadzenHeader Style="font-weight: 600; font-size: 20px; text-align: left">
+    အောက်မှာ Text Box ထဲကို ZawGyi ပြနေတဲ့ Blogspot Link ကိုထည့်ပါ။
+</RadzenHeader>
+<RadzenTextBox Style="width: 80%; vertical-align: middle; text-align: left" Placeholder="Blogspot Link" @bind-Value="@CurrentValue" @oninput=@(args => {CurrentValue=(string)args.Value; CheckLink();}) >
+</RadzenTextBox>
+
+@*<input type="text" bind-Value="CurrentValue" @onchange="CheckLink" />*@
+<RadzenHeader>@CurrentValue</RadzenHeader>
+
+<div>
+    @if (isValidLink)
+    {
+        <p>The link is valid</p>
+    }
+    else if (!isValidLink)
+    {
+        <p>The link is not valid</p>
+    }
+</div>
+
+@code{
+    bool isValidLink;
+    static string CurrentValue {get;set;} = "";
+    
+    void CheckLink()
+    {
+        
+        if (CurrentValue.Contains("blogspot.com"))
+        {
+            isValidLink = true;
+        }
+        else
+        {
+            isValidLink = false;
+        }
+    }
+}
