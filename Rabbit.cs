@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-
-namespace MyanmarText
+public static class Rabbit
 {
-    public static class Rabbit
-    {
-        private static readonly HashSet<RabbitRule> UniToZgRules;
-        private static readonly HashSet<RabbitRule> ZgToUniRules;
+    private static readonly HashSet<RabbitRule> UniToZgRules;
+    private static readonly HashSet<RabbitRule> ZgToUniRules;
 
-        static Rabbit()
-        {
-            UniToZgRules = new HashSet<RabbitRule> {
+    static Rabbit()
+    {
+        UniToZgRules = new HashSet<RabbitRule> {
             // ... rest of the rules
             new RabbitRule("\u1004\u103a\u1039", "\u1064"),
             new RabbitRule("\u1039\u1010\u103d", "\u1096"),
@@ -95,7 +90,7 @@ namespace MyanmarText
             new RabbitRule("\u102c([\u107b\u1066])\u1037", "\u102c$1\u1094"),
             new RabbitRule("\u1047((?=[\u1000-\u1021]\u1039)|(?=[\u102c-\u1030\u1032\u1036-\u1038\u103c\u103d]))", "\u101b")
         };
-            ZgToUniRules = new HashSet<RabbitRule> {
+        ZgToUniRules = new HashSet<RabbitRule> {
             // ... rest of the rules
             new RabbitRule("([\u102d\u102e\u103d\u102f\u1037\u1095])$1+", "$1"),
             new RabbitRule("\u200b", ""),
@@ -216,54 +211,52 @@ namespace MyanmarText
             new RabbitRule("\u1036\u103d", "\u103d\u1036"),
             new RabbitRule("\u1047((?=[\u1000-\u1021]\u103a)|(?=[\u102c-\u1030\u1032\u1036-\u1038\u103d\u103e]))", "\u101b")
         };
-        }
-
-        public class RabbitRule
-        {
-            private readonly Regex _pattern;
-            private readonly string _replacement;
-
-            public RabbitRule(string pattern, string replacement)
-            {
-                _pattern = new Regex(pattern);
-                _replacement = replacement;
-            }
-            public string Apply(string input)
-            {
-                return _pattern.Replace(input, _replacement);
-            }
-        }
-
-
-        public static string UniToZg(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                throw new ArgumentNullException("Input string can't be null or empty");
-            }
-            string output = input;
-            foreach (var rule in UniToZgRules)
-            {
-                output = rule.Apply(output);
-            }
-            return output;
-        }
-
-        public static string ZgToUni(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                throw new ArgumentNullException("Input string can't be null or empty");
-            }
-            string output = input;
-            foreach (var rule in ZgToUniRules)
-            {
-                output = rule.Apply(output);
-            }
-            return output;
-        }
-
-
     }
+
+    public class RabbitRule
+    {
+        private readonly Regex _pattern;
+        private readonly string _replacement;
+
+        public RabbitRule(string pattern, string replacement)
+        {
+            _pattern = new Regex(pattern);
+            _replacement = replacement;
+        }
+        public string Apply(string input)
+        {
+            return _pattern.Replace(input, _replacement);
+        }
+    }
+
+
+    public static string UniToZg(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            throw new ArgumentNullException("Input string can't be null or empty");
+        }
+        string output = input;
+        foreach (var rule in UniToZgRules)
+        {
+            output = rule.Apply(output);
+        }
+        return output;
+    }
+
+    public static string ZgToUni(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            throw new ArgumentNullException("Input string can't be null or empty");
+        }
+        string output = input;
+        foreach (var rule in ZgToUniRules)
+        {
+            output = rule.Apply(output);
+        }
+        return output;
+    }
+
 
 }

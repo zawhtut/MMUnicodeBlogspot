@@ -1,12 +1,14 @@
+@using SmartReader
+
 
 <RadzenHeader Style="font-weight: 600; font-size: 20px; text-align: left">
     အောက်မှာ Text Box ထဲကို ZawGyi ပြနေတဲ့ Blogspot Link ကိုထည့်ပါ။
 </RadzenHeader>
-<RadzenTextBox Style="width: 80%; vertical-align: middle; text-align: left" Placeholder="Blogspot Link" @bind-Value="@CurrentValue" @oninput=@(args => {CurrentValue=(string)args.Value; CheckLink();}) >
+<RadzenTextBox Style="width: 80%; vertical-align: middle; text-align: left" Placeholder="Blogspot Link" @bind-Value="@CurrentValue" @oninput=@(async args => {CurrentValue=(string)args.Value; CheckLink(); await LoadArticle(); })>
 </RadzenTextBox>
 
-@*<input type="text" bind-Value="CurrentValue" @onchange="CheckLink" />*@
-<RadzenHeader>@CurrentValue</RadzenHeader>
+@*<input type="text" bind-Value="CurrentValue" @onchange="CheckLink" />
+<RadzenHeader>@CurrentValue</RadzenHeader>*@
 
 <div>
     @if (isValidLink)
@@ -18,14 +20,46 @@
         <p>The link is not valid</p>
     }
 </div>
+<div class="loading-progress circle" style="display:@(IsLoading ? "block" : "none")">
+</div>
+<div>
+    @((MarkupString)_rawContent)
+</div>
 
-@code{
-    bool isValidLink;
-    static string CurrentValue {get;set;} = "";
-    
+@code {
+    private bool isValidLink;
+    private bool _isLoading;
+    private string _rawContent;
+    public string CurrentValue { get; set; } = "http://mmbloggershelpdesk.blogspot.com/2012/01/facebook-like-button.html";
+
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set {  _isLoading = value;
+            StateHasChanged();  }
+    }
+
+    private async Task LoadArticle()
+    {
+        IsLoading = true;
+        using (var client = new HttpClient())
+        {
+            var response = await client.GetAsync(CurrentValue);
+            if (response.IsSuccessStatusCode)
+            {
+                Article article = await Task.Run(() =>
+                {
+                    Reader reader = new Reader(CurrentValue);
+                    return reader.GetArticle();
+                });
+                _rawContent = Rabbit.ZgToUni(article.Content);
+            }
+        }
+        IsLoading = false;
+    }
+
     void CheckLink()
     {
-        
         if (CurrentValue.Contains("blogspot.com"))
         {
             isValidLink = true;
@@ -34,5 +68,10 @@
         {
             isValidLink = false;
         }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadArticle();
     }
 }
