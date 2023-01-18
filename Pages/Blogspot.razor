@@ -4,7 +4,7 @@
 <RadzenHeader Style="font-weight: 600; font-size: 20px; text-align: left">
     အောက်မှာ Text Box ထဲကို ZawGyi ပြနေတဲ့ Blogspot Link ကိုထည့်ပါ။
 </RadzenHeader>
-<RadzenTextBox Style="width: 80%; vertical-align: middle; text-align: left" Placeholder="Blogspot Link" @bind-Value="@CurrentValue" @oninput=@(async args => {CurrentValue=(string)args.Value; CheckLink(); await LoadArticle(); })>
+<RadzenTextBox Style="width: 90%; vertical-align: middle; text-align: left; min-height: 45px; font-size: 18px" Placeholder="Blogspot Link" @bind-Value="@CurrentValue" @oninput=@(async args => {CurrentValue=(string)args.Value; CheckLink(); await LoadArticle(); })>
 </RadzenTextBox>
 
 @*<input type="text" bind-Value="CurrentValue" @onchange="CheckLink" />
@@ -13,11 +13,11 @@
 <div>
     @if (isValidLink)
     {
-        <p>The link is valid</p>
+        <p>The link is valid.</p>
     }
     else if (!isValidLink)
     {
-        <p>The link is not valid</p>
+        <p>The link is not valid.</p>
     }
 </div>
 <div class="loading-progress circle" style="display:@(IsLoading ? "block" : "none")">
@@ -27,7 +27,7 @@
 </div>
 
 @code {
-    private bool isValidLink;
+    private bool isValidLink = true;
     private bool _isLoading;
     private string _rawContent;
     public string CurrentValue { get; set; } = "http://mmbloggershelpdesk.blogspot.com/2012/01/facebook-like-button.html";
