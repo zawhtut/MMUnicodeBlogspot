@@ -1,11 +1,15 @@
 @using SmartReader
+@using System.Net;
+@inject IJSRuntime JSRuntime;
 
 
-<RadzenHeader Style="font-weight: 600; font-size: 20px; text-align: left">
+
+<RadzenHeader class="sticky-top mt-3 ms-2 px-2" Style="font-weight: 600; font-size: 20px; text-align: left">
     အောက်မှာ Text Box ထဲကို ZawGyi ပြနေတဲ့ Blogspot Link ကိုထည့်ပါ။
+    <RadzenTextBox Style="width: 100%; vertical-align: middle; text-align: left" Placeholder="Blogspot Link" @bind-Value="@CurrentValue" @oninput=@(async args => {CurrentValue=(string)args.Value; CheckLink(); await LoadArticle(); })>
+    </RadzenTextBox>
 </RadzenHeader>
-<RadzenTextBox Style="width: 80%; vertical-align: middle; text-align: left" Placeholder="Blogspot Link" @bind-Value="@CurrentValue" @oninput=@(async args => {CurrentValue=(string)args.Value; CheckLink(); await LoadArticle(); })>
-</RadzenTextBox>
+
 
 @*<input type="text" bind-Value="CurrentValue" @onchange="CheckLink" />
 <RadzenHeader>@CurrentValue</RadzenHeader>*@
@@ -35,25 +39,40 @@
     public bool IsLoading
     {
         get => _isLoading;
-        set {  _isLoading = value;
-            StateHasChanged();  }
+        set
+        {
+            _isLoading = value;
+            StateHasChanged();
+        }
     }
 
     private async Task LoadArticle()
     {
         IsLoading = true;
-        using (var client = new HttpClient())
+        try
         {
-            var response = await client.GetAsync(CurrentValue);
-            if (response.IsSuccessStatusCode)
+            using (var client = new HttpClient())
             {
-                Article article = await Task.Run(() =>
+                var response = await client.GetAsync(CurrentValue);
+                if (response.StatusCode == HttpStatusCode.OK &&
+                    response.IsSuccessStatusCode)
                 {
-                    Reader reader = new Reader(CurrentValue);
-                    return reader.GetArticle();
-                });
-                _rawContent = Rabbit.ZgToUni(article.Content);
+                    Article article = await Task.Run(() =>
+                    {
+                        Reader reader = new Reader(CurrentValue);
+                        return reader.GetArticle();
+                    });
+                    _rawContent = Rabbit.ZgToUni(article.Content);
+                }
             }
+        }
+        catch (HttpRequestException e)
+        {
+            // Log the error Error: System.Net.Http.HttpRequestException: No such host is known.
+            //Console.Log("Error: No such host is known.");
+            //Trace.WriteLine("Error");
+
+            await JSRuntime.InvokeVoidAsync("console.log", "Error: No such host is known.");
         }
         IsLoading = false;
     }

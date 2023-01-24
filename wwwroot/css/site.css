@@ -26,8 +26,8 @@ body {
     color: var(--rz-text-color);
     font-size: var(--rz-body-font-size);
     line-height: var(--rz-body-line-height);
-    /* background-color: var(--rz-body-background-color); */
-    background-color: var(--rz-body-background-color-warning-lighter), transition: "background .5s cubic-bezier(0.25,0.10,0.25,1.00)";
+    background-color: var(--rz-body-background-color);
+    /*background-color: var(--rz-body-background-color-warning-lighter), transition: "background .5s cubic-bezier(0.25,0.10,0.25,1.00)";*/
 }
 
 .rz-body {
