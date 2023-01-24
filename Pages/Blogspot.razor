@@ -17,11 +17,11 @@
 <div>
     @if (isValidLink)
     {
-        <p>The link is valid</p>
+        <p>The link is valid.</p>
     }
     else if (!isValidLink)
     {
-        <p>The link is not valid</p>
+        <p>The link is not valid.</p>
     }
 </div>
 <div class="loading-progress circle" style="display:@(IsLoading ? "block" : "none")">
@@ -31,10 +31,10 @@
 </div>
 
 @code {
-    private bool isValidLink;
+    private bool isValidLink = true;
     private bool _isLoading;
     private string _rawContent;
-    public string CurrentValue { get; set; } = "http://mmbloggershelpdesk.blogspot.com/2012/01/facebook-like-button.html";
+    public string CurrentValue { get; set; } = "https://mmbloggershelpdesk.blogspot.com/2012/01/facebook-like-button.html";
 
     public bool IsLoading
     {
